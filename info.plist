@@ -1396,7 +1396,7 @@ fi</string>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string># Alfred-Chathub
+	<string># &lt;img src='icon.png' width='45' align='center' alt='icon'&gt; Alfred-Chathub
 
 A chat tool that integrates multiple popular large language model (LLM) services, including OpenAI, Anthropic, Gemini, etc. Currently supports:
 - [x] OpenAI
@@ -1411,14 +1411,22 @@ With the release of Alfred version 5.5, Alfred officially provided the [ChatGPT 
 1. You need to choose an LLM service, register an account on its official website, and obtain an API Key.
 2. Install python3, ensuring that `/usr/bin/env python3 -c "import sys; print(sys.executable)"` prints the correct path to your python3.
 
-## Setup
+Here is how to get those api-keys:
+- OpenAI: https://platform.openai.com/api-keys
+- Anthropic: https://console.anthropic.com/settings/keys
+- Gemini: https://ai.google.dev/gemini-api/docs/api-key
+- (Qwen)通义千问: https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key
+
+## Usage
 
 1. Install the workflow. Typically, you just need to download the latest version from the release page and click to install it.
 2. Perform basic configuration. You need to select a provider, and set the corresponding Api Key, Model. If necessary, set a proxy.
 ![Main Config](assets/main_config.png)
 3. Make sure the endpoint is correct.
 ![Endpoint Config](assets/endpoint_config.png)
-4. Start using it.
+4. Enjoy.
+&gt; Tip: Enhance the user experience by adding hotkey triggers. By default, ctrl + shift + z is preset to open the chat history, while ctrl + shift + x starts a new chat. However, feel free to customize these hotkeys according to your preference.
+
 ![Ask Chathub](assets/ask_chathub.png)
 ![Chat](assets/chat.png)
 ![Chat History](assets/history.png)</string>

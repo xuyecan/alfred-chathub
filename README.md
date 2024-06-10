@@ -26,7 +26,9 @@ Here is how to get those api-keys:
 ![Main Config](assets/main_config.png)
 3. Make sure the endpoint is correct.
 ![Endpoint Config](assets/endpoint_config.png)
-4. Start using it. Tips: You can add extra Hotkey Triggers for opening chat history or starting a new chat, that would bring smoother user experience.
+4. Enjoy.
+> Tip: Enhance the user experience by adding hotkey triggers. By default, ctrl + shift + z is preset to open the chat history, while ctrl + shift + x starts a new chat. However, feel free to customize these hotkeys according to your preference.
+
 ![Ask Chathub](assets/ask_chathub.png)
 ![Chat](assets/chat.png)
 ![Chat History](assets/history.png)
