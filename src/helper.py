@@ -30,6 +30,8 @@ def write_file(path, text):
         file.write(text)
 
 def read_chat(path):
+    if not file_exists(path):
+        return []
     with open(path, "r", encoding="utf-8") as file:
         chat_string = file.read()
     return json.loads(chat_string)
