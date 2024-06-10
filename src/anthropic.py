@@ -28,8 +28,9 @@ class AnthropicService(LLMService):
     def parse_stream_response(self, stream_string) -> Tuple[str, str, bool]:
         if stream_string.startswith("{"):
             try:
-                error_message = json.loads(stream_string).get("error", {}).get("type", "Unknown Error")
-                return "", error_message, True
+                error_type = json.loads(stream_string).get("error", {}).get("type", "Unknown Error")
+                error_message = json.loads(stream_string).get("error", {}).get("message", "Unknown Error")
+                return "", f"{error_type}: {error_message}", True
             except:
                 return "", "Response body is not valid json.", True
 

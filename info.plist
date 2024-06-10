@@ -125,6 +125,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>49EE7CE7-D637-42EF-B80B-CF1922523861</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>B2F04B2C-63AD-4A6D-9A81-7F333D0A075A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>4DB440D5-3814-4C79-9724-D19FDDDA4BEC</key>
 		<array>
 			<dict>
@@ -453,6 +466,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>F087B99D-48BE-4880-925F-8FDE3F736AE6</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F4D88498-0A97-492F-989F-26182BFEEE31</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>F4D88498-0A97-492F-989F-26182BFEEE31</key>
 		<array>
 			<dict>
@@ -597,6 +623,37 @@
 			<string>DA9FB2AC-0A0A-463D-B07A-B25CD699C24C</string>
 			<key>version</key>
 			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>7</integer>
+				<key>hotmod</key>
+				<integer>393216</integer>
+				<key>hotstring</key>
+				<string>X</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>F087B99D-48BE-4880-925F-8FDE3F736AE6</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -1306,6 +1363,37 @@ fi</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>6</integer>
+				<key>hotmod</key>
+				<integer>393216</integer>
+				<key>hotstring</key>
+				<string>Z</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>49EE7CE7-D637-42EF-B80B-CF1922523861</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string># Alfred-Chathub
@@ -1411,6 +1499,13 @@ With the release of Alfred version 5.5, Alfred officially provided the [ChatGPT 
 			<real>560</real>
 			<key>ypos</key>
 			<real>485</real>
+		</dict>
+		<key>49EE7CE7-D637-42EF-B80B-CF1922523861</key>
+		<dict>
+			<key>xpos</key>
+			<real>70</real>
+			<key>ypos</key>
+			<real>735</real>
 		</dict>
 		<key>4DB440D5-3814-4C79-9724-D19FDDDA4BEC</key>
 		<dict>
@@ -1568,6 +1663,13 @@ With the release of Alfred version 5.5, Alfred officially provided the [ChatGPT 
 			<real>2220</real>
 			<key>ypos</key>
 			<real>215</real>
+		</dict>
+		<key>F087B99D-48BE-4880-925F-8FDE3F736AE6</key>
+		<dict>
+			<key>xpos</key>
+			<real>410</real>
+			<key>ypos</key>
+			<real>180</real>
 		</dict>
 		<key>F4D88498-0A97-492F-989F-26182BFEEE31</key>
 		<dict>
@@ -1932,7 +2034,7 @@ With the release of Alfred version 5.5, Alfred officially provided the [ChatGPT 
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>8192</string>
+				<string>2048</string>
 				<key>pairs</key>
 				<array>
 					<array>
