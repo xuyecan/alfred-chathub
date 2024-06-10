@@ -8,7 +8,13 @@ def run():
         return no_archives()
 
     sf_items = []
-    for file in reversed(dir_contents(archive_dir)):
+    chat_files = dir_contents(archive_dir)
+
+    ongoing_chat_file = os.path.join(env_var("alfred_workflow_data"), "chat.json")
+    if file_exists(ongoing_chat_file):
+        chat_files.append(ongoing_chat_file)
+
+    for file in reversed(chat_files):
         if file.endswith(".json"):
             chat_contents = read_chat(file)
             first_question = next((item["content"] for item in chat_contents if item["role"] == "user"), None)

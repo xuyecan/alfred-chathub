@@ -19,6 +19,10 @@ def run():
 
     current_chat = f"{env_var('alfred_workflow_data')}/chat.json"
     replacement_chat = env_var('replace_with_chat')
+
+    if replacement_chat == current_chat:
+        return
+
     archive_dir = f"{env_var('alfred_workflow_data')}/archive"
     archived_chat = f"{archive_dir}/{current_year}.{current_month}.{current_day}.{current_hour}.{current_minute}.{current_second}-{uid}.json"
 
