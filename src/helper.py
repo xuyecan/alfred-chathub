@@ -6,6 +6,12 @@ from pathlib import Path
 def env_var(var_name):
     return os.environ.get(var_name)
 
+def user_signature():
+    return "**You:** "
+
+def assistant_signature():
+    return "**Assistant:** "
+
 def make_dir(path):
     os.makedirs(path, exist_ok=True)
 
@@ -48,9 +54,9 @@ def markdown_chat(messages, ignore_last_interrupted=True):
     result = ""
     for index, current in enumerate(messages):
         if current["role"] == "assistant":
-            result += "#### Assistant\n" + current["content"] + "\n\n"
+            result += assistant_signature() + current["content"] + "\n\n"
         elif current["role"] == "user":
-            user_message = "#### You\n" + "\n".join(f"{line}" for line in current["content"].split("\n"))
+            user_message = user_signature() + "\n".join(f"{line}" for line in current["content"].split("\n"))
             user_twice = index + 1 < len(messages) and messages[index + 1]["role"] == "user"
             last_message = index == len(messages) - 1
             if user_twice or (last_message and not ignore_last_interrupted):

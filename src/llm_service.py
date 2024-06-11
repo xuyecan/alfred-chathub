@@ -48,7 +48,7 @@ class LLMService(ABC):
             return json.dumps({
                 "rerun": 0.1,
                 "variables": {"streaming_now": True},
-                "response": "#### Assistant\n...",
+                "response": f"{assistant_signature()}...",
                 "behaviour": {"response": "append"}
                 })
 
@@ -80,7 +80,7 @@ class LLMService(ABC):
             return json.dumps({
                 "rerun": 0.1,
                 "variables": {"streaming_now": True},
-                "response": "#### Assistant\n" + response_text,
+                "response": assistant_signature() + response_text,
                 "behaviour": {"response": "replacelast"}
             })
 
@@ -94,7 +94,7 @@ class LLMService(ABC):
             footer_text = f"[{error_message}]"
 
         return json.dumps({
-            "response": "#### Assistant\n" + response_text,
+            "response": assistant_signature() + response_text,
             "footer": footer_text,
             "behaviour": {"response": "replacelast", "scroll": "end"}
         })
