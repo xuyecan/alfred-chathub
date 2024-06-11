@@ -28,10 +28,31 @@ class LLMService(ABC):
     def parse_stream_response(self, stream_string) -> Tuple[str, str, bool]:
         pass
 
+    def remove_empty_assistant_messages(self, messages):
+        i = 0
+        while i < len(messages):
+            if messages[i]["role"] == "assistant" and not messages[i]["content"]:
+                if i > 0 and messages[i - 1]["role"] == "user":
+                    # Remove both the empty assistant message and the preceding user message
+                    del messages[i]
+                    del messages[i - 1]
+                    i -= 1
+                else:
+                    # If there's no preceding user message, just remove the assistant message
+                    del messages[i]
+            else:
+                i += 1
+        return messages
+
     def start_stream(self, max_tokens, system_prompt, context_chat, stream_file, pid_stream_file):
-        write_file(stream_file, "")  # Create empty file
+        write_file(stream_file, "")
+
+        while len(context_chat) > 0 and context_chat[0]["role"] == "assistant":
+            context_chat.pop(0)
 
         messages = [{"role": "system", "content": system_prompt}] + context_chat if system_prompt else context_chat
+
+        self.remove_empty_assistant_messages(messages)
 
         curl_command = self.construct_curl_command(max_tokens, messages, stream_file)
 
@@ -84,7 +105,7 @@ class LLMService(ABC):
                 "behaviour": {"response": "replacelast"}
             })
 
-        append_chat(chat_file, {"role": "assistant", "content": response_text})
+        append_chat(chat_file, {"role": "assistant", "content": response_text if response_text else error_message})
         delete_file(stream_file)
         delete_file(pid_stream_file)
 
