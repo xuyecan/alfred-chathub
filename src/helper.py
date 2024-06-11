@@ -7,10 +7,10 @@ def env_var(var_name):
     return os.environ.get(var_name)
 
 def user_signature():
-    return "**You:** "
+    return "**You:**\n\n"
 
 def assistant_signature():
-    return "**Assistant:** "
+    return "**Assistant:**\n\n"
 
 def make_dir(path):
     os.makedirs(path, exist_ok=True)
