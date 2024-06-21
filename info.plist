@@ -1910,6 +1910,10 @@ Here is how to get those api-keys:
 				<key>pairs</key>
 				<array>
 					<array>
+						<string>Claude 3.5 Sonnet</string>
+						<string>claude-3-5-sonnet-20240620</string>
+					</array>
+					<array>
 						<string>Claude 3 Opus</string>
 						<string>claude-3-opus-20240229</string>
 					</array>
