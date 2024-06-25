@@ -1009,7 +1009,7 @@ fi</string>
 				<key>inputtype</key>
 				<integer>1</integer>
 				<key>loadingtext</key>
-				<string>Querying ChatGPT API…</string>
+				<string>Querying LLM…</string>
 				<key>outputmode</key>
 				<integer>1</integer>
 				<key>scriptinput</key>
