@@ -1,16 +1,21 @@
 import json
+import subprocess
 from typing import Tuple
+from helper import write_file, os
 
 from llm_service import LLMService
 
 class AnthropicService(LLMService):
-    def construct_curl_command(self, max_tokens, messages, stream_file) -> list:
+    def construct_curl_command(self, max_tokens, messages, stream_file, system_prompt) -> list:
         data = {
             "model": self.model,
             "max_tokens": max_tokens,
             "messages": messages,
             "stream": True
         }
+
+        if system_prompt:
+            data["system"] = system_prompt
 
         return [
             "curl",
@@ -77,3 +82,16 @@ class AnthropicService(LLMService):
             error_message = " An unexpected error has occurred internal to Anthropic’s systems."
 
         return response_text, error_message, has_stopped
+
+    def start_stream(self, max_tokens, system_prompt, context_chat, stream_file, pid_stream_file):
+        write_file(stream_file, "")
+
+        while len(context_chat) > 0 and context_chat[0]["role"] == "assistant":
+            context_chat.pop(0)
+
+        curl_command = self.construct_curl_command(max_tokens, context_chat, stream_file, system_prompt)
+
+        with open(os.devnull, 'w') as devnull:
+            process = subprocess.Popen(curl_command, stdout=devnull, stderr=devnull)
+
+        write_file(pid_stream_file, str(process.pid))
