@@ -1,0 +1,50 @@
+name: Release - bundle Alfred Workflow
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Version
+        id: version
+        run: |
+          CURRENT_VERSION=$(sed -n 's/.*<string>\(20[0-9][0-9]\.[0-9]*\)<\/string>.*/\1/p' info.plist | head -n 1)
+          YEAR=$(date +%Y)
+          if [[ "${CURRENT_VERSION%.*}" == "$YEAR" ]]; then
+            NEW_VERSION="${YEAR}.$(( ${CURRENT_VERSION##*.} + 1 ))"
+          else
+            NEW_VERSION="${YEAR}.1"
+          fi
+          sed -i '' "s/<string>$CURRENT_VERSION<\/string>/<string>$NEW_VERSION<\/string>/" info.plist
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Commit and push version update
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add info.plist
+          git commit -m "Bump version to ${{ steps.version.outputs.NEW_VERSION }} [skip ci]"
+          git push
+
+      - name: Build Workflow
+        run: |
+          zip -r alfred-chathub.alfredworkflow . -x "*.git*" "*.github*"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.NEW_VERSION }}
+          name: Release v${{ steps.version.outputs.NEW_VERSION }}
+          files: alfred-chathub.alfredworkflow
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
