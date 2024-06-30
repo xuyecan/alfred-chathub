@@ -2147,7 +2147,7 @@ Here is how to get those api-keys:
 		<string>https://dashscope.aliyuncs.com</string>
 	</dict>
 	<key>version</key>
-	<string>2024.11</string>
+	<string>2024.12</string>
 	<key>webaddress</key>
 	<string>https://github.com/xuyecan/alfred-chathub</string>
 </dict>
