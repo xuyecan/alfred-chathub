@@ -23,12 +23,19 @@ Here is how to get those api-keys:
 
 1. Install the workflow. Typically, you just need to download the latest version from the release page and click to install it.
 2. Perform basic configuration. You need to select a provider, and set the corresponding Api Key, Model. If necessary, set a proxy.
-![Main Config](assets/main_config.png)
-3. Make sure the endpoint is correct.
-![Endpoint Config](assets/endpoint_config.png)
-4. Enjoy.
-> Tip: Enhance the user experience by adding hotkey triggers. By default, ctrl + shift + z is preset to open the chat history, while ctrl + shift + x starts a new chat. However, feel free to customize these hotkeys according to your preference.
 
-![Ask Chathub](assets/ask_chathub.png)
-![Chat](assets/chat.png)
-![Chat History](assets/history.png)
+<img src="assets/main_config.png" alt="Main Config" width="500" style="margin-left: 25px">
+
+3. Make sure the endpoint is correct.
+
+<img src="assets/endpoint_config.png" alt="Endpoint Config" width="500" style="margin-left: 25px">
+
+4. Enjoy.
+> Tip: Enhance your user experience by adding hotkey triggers. After installation, the workflow's hotkey triggers are initially unset. We recommend using Ctrl + Shift + Z to open chat history and Ctrl + Shift + X to start a new chat, but feel free to customize these to your liking.
+
+<img src="assets/hotkey_setting.png" alt="Hotkey Setting" width="500" style="margin-left: 25px">
+
+## Showcase
+<p><img src="assets/ask_chathub.png" alt="Ask Chathub" width="500"></p>
+<p><img src="assets/chat.png" alt="Chat" width="500"></p>
+<p><img src="assets/history.png" alt="Chat History" width="500"></p>
