@@ -42,7 +42,7 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.NEW_VERSION }}
           name: Release v${{ steps.version.outputs.NEW_VERSION }}
-          files: alfred-chathub.alfredworkflow
+          files: alfred-chathub-v${{ steps.version.outputs.NEW_VERSION }}.alfredworkflow
           draft: false
           prerelease: false
           generate_release_notes: true
