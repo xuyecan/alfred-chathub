@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
 
-from helper import *
+import json
 import os
+
+from helper import (
+    dir_contents,
+    env_var,
+    file_exists,
+    no_archives,
+    read_chat,
+    trash_chat,
+)
 
 
 def _truncate(text, limit):
@@ -9,6 +18,7 @@ def _truncate(text, limit):
     if not text:
         return ""
     return text if len(text) <= limit else text[: max(0, limit - 1)] + "…"
+
 
 def run():
     archive_dir = os.path.join(env_var("alfred_workflow_data"), "archive")
@@ -25,8 +35,18 @@ def run():
     for file in reversed(chat_files):
         if file.endswith(".json"):
             chat_contents = read_chat(file)
-            first_question = next((item["content"] for item in chat_contents if item["role"] == "user"), None)
-            last_question = next((item["content"] for item in reversed(chat_contents) if item["role"] == "user"), None)
+            first_question = next(
+                (item["content"] for item in chat_contents if item["role"] == "user"),
+                None,
+            )
+            last_question = next(
+                (
+                    item["content"]
+                    for item in reversed(chat_contents)
+                    if item["role"] == "user"
+                ),
+                None,
+            )
 
             # Delete invalid chats
             if not first_question:
@@ -36,26 +56,37 @@ def run():
             uid = os.path.basename(file)
             title = _truncate(first_question, 80)
             subtitle = _truncate(last_question or "", 120)
-            items.append({
-                "uid": uid,
-                "title": title,
-                "subtitle": subtitle,
-                "match": f"{first_question} {last_question}",
-                "arg": file,
-                "valid": True,
-                "text": {"copy": f"{first_question} — {last_question or ''}", "largetype": title}
-            })
+            items.append(
+                {
+                    "uid": uid,
+                    "title": title,
+                    "subtitle": subtitle,
+                    "match": f"{first_question} {last_question}",
+                    "arg": file,
+                    "valid": True,
+                    "text": {
+                        "copy": f"{first_question} — {last_question or ''}",
+                        "largetype": title,
+                    },
+                }
+            )
 
     if not items:
-        return json.dumps({
-            "items": [{
-                "title": "No Chat Histories Found",
-                "subtitle": "Start a new chat, then save",
-                "arg": "",
-                "valid": False
-            }]})
+        return json.dumps(
+            {
+                "items": [
+                    {
+                        "title": "No Chat Histories Found",
+                        "subtitle": "Start a new chat, then save",
+                        "arg": "",
+                        "valid": False,
+                    }
+                ]
+            }
+        )
 
-    return json.dumps({ "items": items })
+    return json.dumps({"items": items})
+
 
 if __name__ == "__main__":
     print(run())

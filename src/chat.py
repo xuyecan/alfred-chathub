@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+import json
 import sys
 
 from anthropic import AnthropicService
+from chatglm import ChatGLMService
 from deepseek import DeepseekService
 from gemini import GeminiService
-from helper import *
+from helper import append_chat, env_var, file_exists, markdown_chat, read_chat
 from ollama import OllamaService
 from openai import OpenaiService
 from qwen import QwenService
@@ -49,52 +51,97 @@ def run(argv):
     deepseek_api_key = env_var("deepseek_api_key")
     deepseek_model = env_var("deepseek_model")
 
+    chatglm_api_endpoint = env_var("chatglm_api_endpoint")
+    chatglm_api_key = env_var("chatglm_api_key")
+    chatglm_model = env_var("chatglm_model")
+
     llm_service = None
     if selected_llm_service == "openai":
-        llm_service = OpenaiService(openai_api_endpoint, openai_api_key, openai_model, http_proxy, socks5_proxy)
+        llm_service = OpenaiService(
+            openai_api_endpoint, openai_api_key, openai_model, http_proxy, socks5_proxy
+        )
     elif selected_llm_service == "anthropic":
-        llm_service = AnthropicService(anthropic_api_endpoint, anthropic_api_key, anthropic_model, http_proxy, socks5_proxy)
+        llm_service = AnthropicService(
+            anthropic_api_endpoint,
+            anthropic_api_key,
+            anthropic_model,
+            http_proxy,
+            socks5_proxy,
+        )
     elif selected_llm_service == "gemini":
-        llm_service = GeminiService(gemini_api_endpoint, gemini_api_key, gemini_model, http_proxy, socks5_proxy)
+        llm_service = GeminiService(
+            gemini_api_endpoint, gemini_api_key, gemini_model, http_proxy, socks5_proxy
+        )
     elif selected_llm_service == "qwen":
-        llm_service = QwenService(qwen_api_endpoint, qwen_api_key, qwen_model, http_proxy, socks5_proxy)
+        llm_service = QwenService(
+            qwen_api_endpoint, qwen_api_key, qwen_model, http_proxy, socks5_proxy
+        )
     elif selected_llm_service == "ollama":
-        llm_service = OllamaService(ollama_api_endpoint, ollama_model, http_proxy, socks5_proxy)
+        llm_service = OllamaService(
+            ollama_api_endpoint, ollama_model, http_proxy, socks5_proxy
+        )
     elif selected_llm_service == "deepseek":
-        llm_service = DeepseekService(deepseek_api_endpoint, deepseek_api_key, deepseek_model, http_proxy, socks5_proxy)
+        llm_service = DeepseekService(
+            deepseek_api_endpoint,
+            deepseek_api_key,
+            deepseek_model,
+            http_proxy,
+            socks5_proxy,
+        )
+    elif selected_llm_service == "chatglm":
+        llm_service = ChatGLMService(
+            chatglm_api_endpoint,
+            chatglm_api_key,
+            chatglm_model,
+            http_proxy,
+            socks5_proxy,
+        )
+
+    assert llm_service is not None, "LLM service is not selected properly."
 
     if streaming_now:
-        return llm_service.read_stream(stream_file, chat_file, pid_stream_file, stream_marker)
+        return llm_service.read_stream(
+            stream_file, chat_file, pid_stream_file, stream_marker
+        )
 
     previous_chat = read_chat(chat_file)
 
     if file_exists(stream_file):
-        return json.dumps({
-            "rerun": 0.1,
-            "variables": {"streaming_now": True, "stream_marker": True},
-            "response": markdown_chat(previous_chat, True),
-            "behaviour": {"scroll": "end"}
-        })
+        return json.dumps(
+            {
+                "rerun": 0.1,
+                "variables": {"streaming_now": True, "stream_marker": True},
+                "response": markdown_chat(previous_chat, True),
+                "behaviour": {"scroll": "end"},
+            }
+        )
 
     if not typed_query:
-        return json.dumps({
-            "response": markdown_chat(previous_chat, False),
-            "behaviour": {"scroll": "end"}
-        })
+        return json.dumps(
+            {
+                "response": markdown_chat(previous_chat, False),
+                "behaviour": {"scroll": "end"},
+            }
+        )
 
     append_query = {"role": "user", "content": typed_query}
     ongoing_chat = previous_chat + [append_query]
     context_chat = ongoing_chat[-max_context:]
 
-    llm_service.start_stream(max_tokens, system_prompt, context_chat, stream_file, pid_stream_file)
+    llm_service.start_stream(
+        max_tokens, system_prompt, context_chat, stream_file, pid_stream_file
+    )
 
     append_chat(chat_file, append_query)
 
-    return json.dumps({
-        "rerun": 0.1,
-        "variables": { "streaming_now": True, "stream_marker": True },
-        "response": markdown_chat(ongoing_chat)
-    })
+    return json.dumps(
+        {
+            "rerun": 0.1,
+            "variables": {"streaming_now": True, "stream_marker": True},
+            "response": markdown_chat(ongoing_chat),
+        }
+    )
+
 
 if __name__ == "__main__":
     output = run(sys.argv[1:])

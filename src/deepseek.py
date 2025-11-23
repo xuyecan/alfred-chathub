@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import json
-from typing import Tuple
-from llm_service import LLMService
 import tempfile
 import time
+from typing import Optional, Tuple
+
+from llm_service import LLMService
 
 
 class DeepseekService(LLMService):
@@ -15,22 +16,31 @@ class DeepseekService(LLMService):
             "model": self.model,
             "messages": messages,
             "stream": True,
-            "max_tokens": max_tokens
+            "max_tokens": max_tokens,
         }
 
         return [
             "curl",
             f"{self.api_endpoint}/v1/chat/completions",
-            "--speed-limit", "0", "--speed-time", str(self.stall_timeout_sec),
-            "--silent", "--no-buffer",
-            "--header", f"User-Agent: {self.user_agent}",
-            "--header", "Content-Type: application/json",
-            "--header", f"Authorization: Bearer {self.api_key}",
-            "--data", json.dumps(data),
-            "--output", stream_file
+            "--speed-limit",
+            "0",
+            "--speed-time",
+            str(self.stall_timeout_sec),
+            "--silent",
+            "--no-buffer",
+            "--header",
+            f"User-Agent: {self.user_agent}",
+            "--header",
+            "Content-Type: application/json",
+            "--header",
+            f"Authorization: Bearer {self.api_key}",
+            "--data",
+            json.dumps(data),
+            "--output",
+            stream_file,
         ] + self.proxy_option
 
-    def parse_stream_response(self, stream_string) -> Tuple[str, str, bool]:
+    def parse_stream_response(self, stream_string) -> Tuple[str, Optional[str], bool]:
         # 针对 Deepseek 的 OpenAI 兼容流：既可能返回一次性 JSON 错误体，也可能在 SSE 分片中夹带错误对象。
         # 统一策略：遇到服务端错误时直接回显可读信息，不再走 footer 错误路径。
         if stream_string.startswith("{"):
@@ -61,12 +71,16 @@ class DeepseekService(LLMService):
         for line in stream_string.split("\n"):
             if not line.startswith("data: "):
                 continue
-            data_str = line[len("data: "):].strip()
+            data_str = line[len("data: ") :].strip()
             if data_str == "[DONE]":
                 continue
             try:
                 obj = json.loads(data_str)
-                if isinstance(obj, dict) and obj.get("error") is not None and error_from_sse is None:
+                if (
+                    isinstance(obj, dict)
+                    and obj.get("error") is not None
+                    and error_from_sse is None
+                ):
                     error_from_sse = obj.get("error")
                 raw_chunks.append(obj)
             except json.JSONDecodeError:
@@ -80,7 +94,9 @@ class DeepseekService(LLMService):
 
         if error_from_sse is not None:
             if isinstance(error_from_sse, dict):
-                message = error_from_sse.get("message") or json.dumps(error_from_sse, ensure_ascii=False)
+                message = error_from_sse.get("message") or json.dumps(
+                    error_from_sse, ensure_ascii=False
+                )
             else:
                 message = str(error_from_sse)
             return message, "", True
@@ -125,9 +141,10 @@ def test_deepseek():
 
     service = DeepseekService(api_endpoint, api_key, model, "", "")
 
-    with tempfile.NamedTemporaryFile(mode='w+', delete=False) as stream_file, \
-            tempfile.NamedTemporaryFile(mode='w+', delete=False) as pid_file:
-
+    with (
+        tempfile.NamedTemporaryFile(mode="w+", delete=False) as stream_file,
+        tempfile.NamedTemporaryFile(mode="w+", delete=False) as pid_file,
+    ):
         messages = [
             {"role": "user", "content": "Hello, can you tell me about yourself?"}
         ]
@@ -136,10 +153,12 @@ def test_deepseek():
 
         print("Waiting for response...")
         while True:
-            with open(stream_file.name, 'r', encoding='utf-8') as f:
+            with open(stream_file.name, "r", encoding="utf-8") as f:
                 response = f.read()
                 if response:
-                    response_text, error_message, has_stopped = service.parse_stream_response(response)
+                    response_text, error_message, has_stopped = (
+                        service.parse_stream_response(response)
+                    )
                     if error_message:
                         print(f"Error: {error_message}")
                         break
@@ -149,6 +168,7 @@ def test_deepseek():
             time.sleep(0.1)
 
         import os
+
         os.unlink(stream_file.name)
         os.unlink(pid_file.name)
 

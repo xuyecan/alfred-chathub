@@ -1,7 +1,8 @@
 import json
-from typing import Tuple
+from typing import Optional, Tuple
 
 from llm_service import LLMService
+
 
 class GeminiService(LLMService):
     def construct_curl_command(self, max_tokens, messages, stream_file) -> list:
@@ -13,30 +14,44 @@ class GeminiService(LLMService):
             {"role": "assistant", "content": "Hello! How can I help you today?"}
         ]
         """
-        content = [{"parts": [{"text": message["content"]}], "role": "model" if message["role"] == "assistant" else message["role"]} for message in messages]
+        content = [
+            {
+                "parts": [{"text": message["content"]}],
+                "role": "model" if message["role"] == "assistant" else message["role"],
+            }
+            for message in messages
+        ]
         data = {
             "contents": content,
             "generationConfig": {
                 "maxOutputTokens": max_tokens,
                 # "temperature": 0.8
-            }
+            },
         }
 
         return [
             "curl",
             f"{self.api_endpoint}/v1beta/models/{self.model}:streamGenerateContent?key={self.api_key}",
-            "--speed-limit", "0", "--speed-time", str(self.stall_timeout_sec),  # Abort stalled connection after a few seconds
-            "--silent", "--no-buffer",
-            "--header", f"User-Agent: {self.user_agent}",
-            "--header", "Content-Type: application/json",
-            "--data", json.dumps(data),
-            "--output", stream_file
+            "--speed-limit",
+            "0",
+            "--speed-time",
+            str(self.stall_timeout_sec),  # Abort stalled connection after a few seconds
+            "--silent",
+            "--no-buffer",
+            "--header",
+            f"User-Agent: {self.user_agent}",
+            "--header",
+            "Content-Type: application/json",
+            "--data",
+            json.dumps(data),
+            "--output",
+            stream_file,
         ] + self.proxy_option
 
     def read_and_split_file(self, stream_string):
         parts = []
         current_part = []
-    
+
         lines = stream_string.strip().split("\n")
         for line in lines:
             if line.strip() == ",":
@@ -52,15 +67,15 @@ class GeminiService(LLMService):
         has_stopped = False
         processed_parts = []
         for part in parts:
-            if part.startswith('['):
+            if part.startswith("["):
                 part = part[1:]
-            if part.endswith(']'):
+            if part.endswith("]"):
                 part = part[:-1]
                 has_stopped = True
             processed_parts.append(part)
         return processed_parts, has_stopped
 
-    def parse_stream_response(self, stream_string) -> Tuple[str, str, bool]:
+    def parse_stream_response(self, stream_string) -> Tuple[str, Optional[str], bool]:
         # 统一错误呈现：若响应为一次性 JSON 错误体，则直接回显错误信息
         if stream_string.strip().startswith("{"):
             try:
@@ -80,7 +95,7 @@ class GeminiService(LLMService):
         for part in parts:
             try:
                 current_event = json.loads(part)
-            except json.JSONDecodeError as e:
+            except json.JSONDecodeError:
                 continue
             chunks.append(current_event)
 

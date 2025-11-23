@@ -1,4 +1,8 @@
-from llm_service import *
+import json
+from typing import Optional, Tuple
+
+from llm_service import LLMService
+
 
 class OpenaiService(LLMService):
     def construct_curl_command(self, max_tokens, messages, stream_file) -> list:
@@ -10,25 +14,30 @@ class OpenaiService(LLMService):
             {"role": "assistant", "content": "Hello! How can I help you today?"}
         ]
         """
-        data = {
-            "model": self.model,
-            "messages": messages,
-            "stream": True
-        }
+        data = {"model": self.model, "messages": messages, "stream": True}
 
         return [
             "curl",
             f"{self.api_endpoint}/v1/chat/completions",
-            "--speed-limit", "0", "--speed-time", str(self.stall_timeout_sec),  # Abort stalled connection after a few seconds
-            "--silent", "--no-buffer",
-            "--header", f"User-Agent: {self.user_agent}",
-            "--header", "Content-Type: application/json",
-            "--header", f"Authorization: Bearer {self.api_key}",
-            "--data", json.dumps(data),
-            "--output", stream_file
+            "--speed-limit",
+            "0",
+            "--speed-time",
+            str(self.stall_timeout_sec),  # Abort stalled connection after a few seconds
+            "--silent",
+            "--no-buffer",
+            "--header",
+            f"User-Agent: {self.user_agent}",
+            "--header",
+            "Content-Type: application/json",
+            "--header",
+            f"Authorization: Bearer {self.api_key}",
+            "--data",
+            json.dumps(data),
+            "--output",
+            stream_file,
         ] + self.proxy_option
 
-    def parse_stream_response(self, stream_string) -> Tuple[str, str, bool]:
+    def parse_stream_response(self, stream_string) -> Tuple[str, Optional[str], bool]:
         # 当响应不是 SSE 流（不以 data: 开头）时，可能是错误或非流式一次性响应。
         # 为了“直接展示错误信息”，这里优先解析错误对象；若是一次性成功响应则回退到正常内容解析。
         if stream_string.startswith("{"):
@@ -66,7 +75,7 @@ class OpenaiService(LLMService):
         for line in stream_string.split("\n"):
             if not line.startswith("data: "):
                 continue
-            data_str = line[len("data: "):].strip()
+            data_str = line[len("data: ") :].strip()
             if data_str == "[DONE]":
                 # 某些新模型可能不再在最后一个 choices 中给出 finish_reason，此时仅依赖 [DONE] 作为结束信号
                 saw_done = True
@@ -74,7 +83,11 @@ class OpenaiService(LLMService):
             try:
                 obj = json.loads(data_str)
                 # 兼容：部分“OpenAI 兼容”服务可能通过 SSE 分片发送错误对象
-                if isinstance(obj, dict) and obj.get("error") is not None and error_from_sse is None:
+                if (
+                    isinstance(obj, dict)
+                    and obj.get("error") is not None
+                    and error_from_sse is None
+                ):
                     error_from_sse = obj.get("error")
                 raw_chunks.append(obj)
             except json.JSONDecodeError:
@@ -90,7 +103,9 @@ class OpenaiService(LLMService):
         # 如在 SSE 流中捕获到错误对象，则直接回显错误并终止
         if error_from_sse is not None:
             if isinstance(error_from_sse, dict):
-                message = error_from_sse.get("message") or json.dumps(error_from_sse, ensure_ascii=False)
+                message = error_from_sse.get("message") or json.dumps(
+                    error_from_sse, ensure_ascii=False
+                )
             else:
                 message = str(error_from_sse)
             return message, "", True

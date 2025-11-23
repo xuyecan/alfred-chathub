@@ -2,10 +2,13 @@
 
 import os
 from datetime import datetime
-from helper import *
+
+from helper import env_var, make_dir, mv, write_file
+
 
 def pad_date(number):
     return str(number).zfill(2)
+
 
 def run():
     uid = os.urandom(16).hex()[:8]  # Generates a unique identifier
@@ -18,7 +21,7 @@ def run():
     current_second = pad_date(current_date.second)
 
     current_chat = f"{env_var('alfred_workflow_data')}/chat.json"
-    replacement_chat = env_var('replace_with_chat')
+    replacement_chat = env_var("replace_with_chat")
 
     if replacement_chat == current_chat:
         return
@@ -33,6 +36,7 @@ def run():
         mv(replacement_chat, current_chat)
     else:
         write_file(current_chat, "[]")
+
 
 if __name__ == "__main__":
     run()
