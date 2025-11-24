@@ -2169,6 +2169,14 @@ Here is how to get those api-keys:
 				<key>pairs</key>
 				<array>
 					<array>
+						<string>Gemini 3 Pro</string>
+						<string>gemini-3-pro</string>
+					</array>
+					<array>
+						<string>Gemini 3 Pro Preview</string>
+						<string>gemini-3-pro-preview</string>
+					</array>
+					<array>
 						<string>Gemini 2.5 Pro</string>
 						<string>gemini-2.5-pro</string>
 					</array>
