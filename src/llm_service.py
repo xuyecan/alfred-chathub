@@ -75,7 +75,7 @@ class LLMService(ABC):
         if stream_marker:
             return json.dumps({
                 "rerun": 0.1,
-                "variables": {"streaming_now": True},
+                "variables": carry_variables(streaming_now=True),
                 "response": f"{assistant_signature()}...",
                 "behaviour": {"response": "append"}
                 })
@@ -93,6 +93,7 @@ class LLMService(ABC):
             delete_file(stream_file)
             delete_file(pid_stream_file)
             return json.dumps({
+                "variables": carry_variables(),
                 "response": f"{response_text} [Connection Stalled]",
                 "footer": "You can ask the assistant to continue the answer",
                 "behaviour": {"response": "replacelast", "scroll": "end"}
@@ -101,13 +102,13 @@ class LLMService(ABC):
         if not stream_string:
             return json.dumps({
                 "rerun": 0.1,
-                "variables": {"streaming_now": True}
+                "variables": carry_variables(streaming_now=True)
             })
 
         if not has_stopped:
             return json.dumps({
                 "rerun": 0.1,
-                "variables": {"streaming_now": True},
+                "variables": carry_variables(streaming_now=True),
                 "response": assistant_signature() + response_text,
                 "behaviour": {"response": "replacelast"}
             })
@@ -122,6 +123,7 @@ class LLMService(ABC):
             footer_text = f"[{error_message}]"
 
         return json.dumps({
+            "variables": carry_variables(),
             "response": assistant_signature() + response_text,
             "footer": footer_text,
             "behaviour": {"response": "replacelast", "scroll": "end"}

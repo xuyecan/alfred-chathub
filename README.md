@@ -44,7 +44,23 @@ Here is how to get those api-keys:
    - Your selection is immediately written back to Alfred's Configure panel (User Configuration) and becomes the active provider for chats.
    - The current provider is also highlighted in the `chp` list for quick confirmation.
 
-5. Enjoy.
+5. Define reusable prompts under **Prompt Presets**, one per line as `name | prompt`:
+
+   ```
+   translate | Translate the following between Chinese and English. Output only the translation.
+   polish | Polish the following text, keep the original meaning.
+   explain | Explain the following code line by line.\nAnswer in Chinese.
+   ```
+
+   Then invoke a preset by typing your chat keyword followed by `-`. With the default keyword `chat`:
+
+   - `chat-` lists every preset — press <kbd>⇥</kbd> to autocomplete a name.
+   - `chat-translate Hello world` asks immediately using that preset's prompt.
+   - `chat-translate` alone opens the chat window with the preset applied, so you can paste longer text in.
+
+   A preset starts a fresh conversation and stays active for follow-up questions in that window. <kbd>⌘↩</kbd> (New chat) clears it and returns to your global **System Prompt**. Lines starting with `#` are ignored, and `\n` inside a prompt becomes a line break.
+
+6. Enjoy.
 > Tip: Enhance your user experience by adding hotkey triggers. After installation, the workflow's hotkey triggers are initially unset. We recommend using Ctrl + Shift + Z to open chat history and Ctrl + Shift + X to start a new chat, but feel free to customize these to your liking.
 
 <img src="assets/hotkey_setting.png" alt="Hotkey Setting" width="500" style="margin-left: 25px">

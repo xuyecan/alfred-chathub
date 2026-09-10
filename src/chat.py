@@ -15,7 +15,8 @@ def run(argv):
     typed_query = argv[0]
     max_context = int(env_var("max_context"))
     max_tokens = int(env_var("max_tokens"))
-    system_prompt = env_var("system_prompt")
+    # 一次性 prompt 预设优先于配置面板里的全局 System Prompt
+    system_prompt = env_var("preset_prompt") or env_var("system_prompt")
     chat_file = f"{env_var('alfred_workflow_data')}/chat.json"
     pid_stream_file = f"{env_var('alfred_workflow_cache')}/pid.txt"
     stream_file = f"{env_var('alfred_workflow_cache')}/stream.txt"
@@ -71,13 +72,14 @@ def run(argv):
     if file_exists(stream_file):
         return json.dumps({
             "rerun": 0.1,
-            "variables": {"streaming_now": True, "stream_marker": True},
+            "variables": carry_variables(streaming_now=True, stream_marker=True),
             "response": markdown_chat(previous_chat, True),
             "behaviour": {"scroll": "end"}
         })
 
     if not typed_query:
         return json.dumps({
+            "variables": carry_variables(),
             "response": markdown_chat(previous_chat, False),
             "behaviour": {"scroll": "end"}
         })
@@ -92,7 +94,7 @@ def run(argv):
 
     return json.dumps({
         "rerun": 0.1,
-        "variables": { "streaming_now": True, "stream_marker": True },
+        "variables": carry_variables(streaming_now=True, stream_marker=True),
         "response": markdown_chat(ongoing_chat)
     })
 

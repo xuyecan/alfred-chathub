@@ -271,6 +271,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>A3F1C6D2-5B84-4E97-9C1D-7F2E8B4A6D30</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>2EF95279-1807-40A5-B729-78040FF36DE3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>A4782A1E-2A93-401B-9CB7-1D8770AD510E</key>
 		<array>
 			<dict>
@@ -609,6 +622,57 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>keyword</key>
+				<string>{var:chat_keyword}-</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Loading Presets…</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>src/prompt_presets.py</string>
+				<key>skipuniversalaction</key>
+				<true/>
+				<key>subtext</key>
+				<string>↩ Ask with this prompt · ⇥ Autocomplete a preset name</string>
+				<key>title</key>
+				<string>ChatHub Prompt</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>A3F1C6D2-5B84-4E97-9C1D-7F2E8B4A6D30</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>availableviaurlhandler</key>
 				<false/>
 				<key>triggerid</key>
@@ -886,6 +950,8 @@ kill "${pid_stream}"
 					<string>{query}</string>
 					<key>new_chat</key>
 					<string>1</string>
+					<key>preset_prompt</key>
+					<string></string>
 				</dict>
 			</dict>
 			<key>type</key>
@@ -1600,7 +1666,22 @@ Here is how to get those api-keys:
 ![Main Config](assets/main_config.png)
 3. Make sure the endpoint is correct.
 ![Endpoint Config](assets/endpoint_config.png)
-4. Enjoy.
+4. Define reusable prompts under **Prompt Presets**, one per line as `name | prompt`:
+
+```
+translate | Translate the following between Chinese and English. Output only the translation.
+polish | Polish the following text, keep the original meaning.
+explain | Explain the following code line by line.\nAnswer in Chinese.
+```
+
+Then invoke a preset by typing your chat keyword followed by `-`. With the default keyword `chat`:
+- `chat-` lists every preset — press ⇥ to autocomplete a name.
+- `chat-translate Hello world` asks immediately using that preset's prompt.
+- `chat-translate` alone opens the chat window with the preset applied, so you can paste longer text in.
+
+A preset starts a fresh conversation and stays active for follow-up questions in that window. ⌘↩ (New chat) clears it and returns to your global **System Prompt**. Lines starting with `#` are ignored, and `\n` inside a prompt becomes a line break.
+
+5. Enjoy.
 &gt; Tip: Enhance the user experience by adding hotkey triggers. By default, ctrl + shift + z is preset to open the chat history, while ctrl + shift + x starts a new chat. However, feel free to customize these hotkeys according to your preference.
 
 ![Ask Chathub](assets/ask_chathub.png)
@@ -1755,6 +1836,15 @@ Here is how to get those api-keys:
 			<real>440</real>
 			<key>ypos</key>
 			<real>655</real>
+		</dict>
+		<key>A3F1C6D2-5B84-4E97-9C1D-7F2E8B4A6D30</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>1</integer>
+			<key>xpos</key>
+			<real>65</real>
+			<key>ypos</key>
+			<real>1060</real>
 		</dict>
 		<key>A4782A1E-2A93-401B-9CB7-1D8770AD510E</key>
 		<dict>
@@ -2165,9 +2255,37 @@ Here is how to get those api-keys:
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>gemini-2.5-flash</string>
+				<string>gemini-3.8-flash</string>
 				<key>pairs</key>
 				<array>
+					<array>
+						<string>Gemini 3.8 Flash</string>
+						<string>gemini-3.8-flash</string>
+					</array>
+					<array>
+						<string>Gemini 3.7 Flash</string>
+						<string>gemini-3.7-flash</string>
+					</array>
+					<array>
+						<string>Gemini 3.6 Flash</string>
+						<string>gemini-3.6-flash</string>
+					</array>
+					<array>
+						<string>Gemini 3.5 Flash</string>
+						<string>gemini-3.5-flash</string>
+					</array>
+					<array>
+						<string>Gemini 3.5 Flash-Lite</string>
+						<string>gemini-3.5-flash-lite</string>
+					</array>
+					<array>
+						<string>Gemini 3.1 Pro (preview)</string>
+						<string>gemini-3.1-pro-preview</string>
+					</array>
+					<array>
+						<string>Gemini 3.1 Flash-Lite</string>
+						<string>gemini-3.1-flash-lite</string>
+					</array>
 					<array>
 						<string>Gemini 2.5 Pro</string>
 						<string>gemini-2.5-pro</string>
@@ -2399,6 +2517,27 @@ Here is how to get those api-keys:
 			<string>textarea</string>
 			<key>variable</key>
 			<string>system_prompt</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+				<key>verticalsize</key>
+				<integer>5</integer>
+			</dict>
+			<key>description</key>
+			<string>One per line: name | prompt. Pick one by typing your chat keyword followed by "-" (e.g. chat-translate). Use \n inside a prompt for a line break, # to comment out a line. ASCII names autocomplete best.</string>
+			<key>label</key>
+			<string>Prompt Presets</string>
+			<key>type</key>
+			<string>textarea</string>
+			<key>variable</key>
+			<string>prompt_presets</string>
 		</dict>
 		<dict>
 			<key>config</key>

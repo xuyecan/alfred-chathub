@@ -6,6 +6,12 @@ from pathlib import Path
 def env_var(var_name):
     return os.environ.get(var_name)
 
+def carry_variables(**extra):
+    # Alfred 对返回的 variables 是整体替换语义，流程变量必须每轮原样带回，否则 rerun 后就丢了
+    variables = {"preset_prompt": env_var("preset_prompt") or ""}
+    variables.update(extra)
+    return variables
+
 def user_signature():
     return "**You:**\n\n"
 

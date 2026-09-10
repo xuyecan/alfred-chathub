@@ -13,7 +13,11 @@ class GeminiService(LLMService):
             {"role": "assistant", "content": "Hello! How can I help you today?"}
         ]
         """
-        content = [{"parts": [{"text": message["content"]}], "role": "model" if message["role"] == "assistant" else message["role"]} for message in messages]
+        # Gemini 的 contents[].role 只接受 user / model，system prompt 必须走独立的 systemInstruction
+        system_prompt = "\n\n".join(m["content"] for m in messages if m["role"] == "system" and m["content"])
+        chat_messages = [m for m in messages if m["role"] != "system"]
+
+        content = [{"parts": [{"text": message["content"]}], "role": "model" if message["role"] == "assistant" else message["role"]} for message in chat_messages]
         data = {
             "contents": content,
             "generationConfig": {
@@ -21,6 +25,9 @@ class GeminiService(LLMService):
                 # "temperature": 0.8
             }
         }
+
+        if system_prompt:
+            data["systemInstruction"] = {"parts": [{"text": system_prompt}]}
 
         return [
             "curl",
